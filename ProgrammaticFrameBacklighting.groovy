@@ -21,17 +21,18 @@ extra_y = 2
 
 section_x = 50
 
-battery_x = 2.95*25.4
-battery_y = 1.9*25.4
-battery_z = 0.67*25.4
+battery_x = 2.68*25.4
+battery_y = 2.535*25.4
+battery_z = 0.76*25.4
 
 frame_box_x = section_x
 frame_box_y = side_thickness_y + led_cutout_y + dovetail_y + extra_y
 frame_box_z =  inset_z + painting_z + led_cutout_z + back_thickness_z
 
-CSG frame_box_section = new Cube(frame_box_x, frame_box_y, frame_box_z).toCSG()
+CSG trench_frame_back = new Cube(frame_box_x, frame_box_y, back_thickness_z).toCSG()
+
 
 CSG battery_box = new Cube(battery_x,battery_y, battery_z).toCSG()
 							.movex(300)
 
-return frame_box_section
+return trench_frame_back
