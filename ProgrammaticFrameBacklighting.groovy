@@ -17,9 +17,9 @@ back_thickness_z = 3
 
 dovetail_y = 3
 
-extra_y = 5
+extra_y = 2
 
-section_x = 10
+section_x = 50
 
 battery_x = 2.95*25.4
 battery_y = 1.9*25.4
@@ -29,5 +29,9 @@ frame_box_x = section_x
 frame_box_y = side_thickness_y + led_cutout_y + dovetail_y + extra_y
 frame_box_z =  inset_z + painting_z + led_cutout_z + back_thickness_z
 
+CSG frame_box_section = new Cube(frame_box_x, frame_box_y, frame_box_z).toCSG()
+
 CSG battery_box = new Cube(battery_x,battery_y, battery_z).toCSG()
 							.movex(300)
+
+return frame_box_section
