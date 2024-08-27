@@ -2,62 +2,78 @@ import eu.mihosoft.vrl.v3d.*
 
 // ProgrammaticFrameBacklighting.groovy
 
-painting_z = 6.1
+def painting_z = 6.1
 
-inset_z = 5
+def inset_z = 5
 
 //led_cutout_y = 0.12*25.4 // too small, smallest possible
-led_cutout_y = 5
-led_cutout_z = 0.31*25.4
+def led_cutout_y = 5
+def led_cutout_z = 0.31*25.4
 
-lip_z = 1.5
+def lip_z = 1.5
 
-side_thickness_y = 2
-back_thickness_z = 3
+def side_thickness_y = 2
+def back_thickness_z = 3
+def front_thickness_z = 3
 
-rim_y = 3
+def rim_y = 3
 
-dovetail_y = 2
+def dovetail_y = 2
 
-section_x = 50
+def front_back_space_y = 0.1
+def front_back_space_z = 0.1
 
-battery_x = 2.68*25.4
-battery_y = 2.535*25.4
-battery_z = 0.76*25.4
+def section_x = 50
 
-frame_box_x = section_x
-frame_box_y = side_thickness_y + led_cutout_y + rim_y + dovetail_y
-frame_box_z =  inset_z + painting_z + led_cutout_z + back_thickness_z
+def frame_back_x = section_x
+def frame_back_y = side_thickness_y + led_cutout_y + rim_y + dovetail_y
+def frame_back_z =  inset_z + painting_z + led_cutout_z + back_thickness_z
 
-//bottom plate
-CSG trench_frame_back = new Cube(frame_box_x, frame_box_y, back_thickness_z).toCSG()
+def frame_front_x = section_x
+def frame_front_y = frame_back_y + front_back_space_y + side_thickness_y
+def frame_front_z = frame_back_z + front_back_space_z + front_thickness_z
+
+def battery_x = 2.68*25.4
+def battery_y = 2.535*25.4
+def battery_z = 0.76*25.4
+
+//back plate
+CSG trench_frame_back = new Cube(frame_back_x, frame_back_y, back_thickness_z).toCSG()
 								.toZMin()
 								.toYMin()
 //side panel
-trench_frame_back = trench_frame_back.union(new Cube(frame_box_x, side_thickness_y, frame_box_z).toCSG()
+trench_frame_back = trench_frame_back.union(new Cube(frame_back_x, side_thickness_y, frame_back_z).toCSG()
 								.toZMin()
 								.toYMax()
-								.movey(frame_box_y))
+								.movey(frame_back_y))
 //rim
-trench_frame_back = trench_frame_back.union(new Cube(frame_box_x, rim_y, lip_z).toCSG()
+trench_frame_back = trench_frame_back.union(new Cube(frame_back_x, rim_y, lip_z).toCSG()
 								.toZMin()
 								.movez(back_thickness_z)
 								.toYMax()
-								.movey(frame_box_y-side_thickness_y-led_cutout_y))
+								.movey(frame_back_y-side_thickness_y-led_cutout_y))
 //dovetail
-trench_frame_back = trench_frame_back.union(new Wedge(dovetail_y, frame_box_x, lip_z).toCSG()
+trench_frame_back = trench_frame_back.union(new Wedge(dovetail_y, frame_back_x, lip_z).toCSG()
 								.rotz(270)
 								.rotx(180)
 								.toZMin()
 								.movez(back_thickness_z)
 								.toYMax()
-								.movey(frame_box_y-side_thickness_y-led_cutout_y-rim_y)
+								.movey(frame_back_y-side_thickness_y-led_cutout_y-rim_y)
 								.moveToCenterX())
 // move to make y zero be the edge of diffusion paper
 trench_frame_back = trench_frame_back.movey(-dovetail_y)
+
+//front plate
+CSG trench_frame_front = new Cube(frame_front_x, frame_front_y, front_thickness_z).toCSG()
+								.toZMax()
+								.movez(frame_front_z)
+								.toYMin()
+// move to make y zero be the edge of diffusion paper
+trench_frame_front = trench_frame_front.movey(-dovetail_y)
 
 
 CSG battery_box = new Cube(battery_x,battery_y, battery_z).toCSG()
 							.movex(300)
 
-return trench_frame_back
+return [trench_frame_back, trench_frame_front]
