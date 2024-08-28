@@ -2,19 +2,19 @@ import eu.mihosoft.vrl.v3d.*
 
 // ProgrammaticFrameBacklighting.groovy
 
-def painting_z = 6.1
+def painting_thickness_z = 6.1
+def painting_edge_y = 3
 
-def inset_z = 5
 
-//led_cutout_y = 0.12*25.4 // too small, smallest possible
-def led_cutout_y = 5
+def led_cutout_y = 0.12*25.4 // too small? smallest possible
+//def led_cutout_y = 5
 def led_cutout_z = 0.31*25.4
 
 def lip_z = 1.5
 
 def side_thickness_y = 2
 def back_thickness_z = 3
-def front_thickness_z = 3
+def front_thickness_z = 5
 
 def rim_y = 3
 
@@ -23,11 +23,13 @@ def dovetail_y = 2
 def front_back_space_y = 0.1
 def front_back_space_z = 0.1
 
+def inset_z = 2
+
 def section_x = 50
 
 def frame_back_x = section_x
 def frame_back_y = side_thickness_y + led_cutout_y + rim_y + dovetail_y
-def frame_back_z =  inset_z + painting_z + led_cutout_z + back_thickness_z
+def frame_back_z =  inset_z + painting_thickness_z + led_cutout_z + back_thickness_z
 
 def frame_front_x = section_x
 def frame_front_y = frame_back_y + front_back_space_y + side_thickness_y
@@ -69,11 +71,39 @@ CSG trench_frame_front = new Cube(frame_front_x, frame_front_y, front_thickness_
 								.toZMax()
 								.movez(frame_front_z)
 								.toYMin()
+trench_frame_front = trench_frame_front.union(new Cube(frame_front_x, side_thickness_y, frame_front_z).toCSG()
+								.toZMin()
+								.toYMax()
+								.movey(frame_front_y))
+trench_frame_front = trench_frame_front.union(new Cube(frame_front_x,led_cutout_y,frame_front_z-led_cutout_z-back_thickness_z-front_back_space_z).toCSG()
+								.toZMax()
+								.movez(frame_front_z)
+								.toYMax()
+								.movey(frame_back_y-side_thickness_y-front_back_space_y))
 // move to make y zero be the edge of diffusion paper
 trench_frame_front = trench_frame_front.movey(-dovetail_y)
 
+// model the painting, for reference
+CSG painting = new Cube(section_x, painting_edge_y, painting_thickness_z).toCSG()
+								.toZMax()
+								.movez(frame_back_z)
+								.toYMin()
+								.setColor(javafx.scene.paint.Color.DARKRED)
+// move to make y zero be the edge of diffusion paper
+painting = painting.movey(-dovetail_y)
 
+// model the LED strip, for reference
+CSG led = new Cube(section_x, led_cutout_y, led_cutout_z).toCSG()
+								.toZMin()
+								.movez(back_thickness_z)
+								.toYMax()
+								.movey(frame_back_y-side_thickness_y)
+								.setColor(javafx.scene.paint.Color.CYAN)
+// move to make y zero be the edge of diffusion paper
+led = led.movey(-dovetail_y)
+
+// battery box
 CSG battery_box = new Cube(battery_x,battery_y, battery_z).toCSG()
 							.movex(300)
 
-return [trench_frame_back, trench_frame_front]
+return [trench_frame_back, trench_frame_front, led, painting]
