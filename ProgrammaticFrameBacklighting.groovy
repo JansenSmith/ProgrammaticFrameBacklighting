@@ -25,7 +25,7 @@ def extra_y = painting_edge_y - dovetail_y - rim_y + front_back_space_y
 
 def inset_z = 2
 
-def section_x = 50
+def section_x = 30
 
 def frame_back_x = section_x
 def frame_back_y = side_thickness_y + led_cutout_y + rim_y + dovetail_y + extra_y
