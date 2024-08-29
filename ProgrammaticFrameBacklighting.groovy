@@ -69,6 +69,7 @@ trench_frame_back = trench_frame_back.union(new Wedge(dovetail_y, frame_back_x, 
 								.moveToCenterX())
 // move to make y zero be the edge of diffusion paper
 trench_frame_back = trench_frame_back.movey(-dovetail_y)
+								.setName("frame_back")
 
 //front plate
 CSG trench_frame_front = new Cube(frame_front_x, frame_front_y, front_thickness_z).toCSG()
@@ -91,6 +92,7 @@ trench_frame_front = trench_frame_front.union(new Cube(frame_front_x, side_thick
 								.movey(frame_front_y))
 // move to make y zero be the edge of diffusion paper
 trench_frame_front = trench_frame_front.movey(-dovetail_y)
+								.setName("frame_front")
 
 //middle spacer
 CSG trench_frame_mid = new Cube(frame_front_x,led_cutout_y+rim_y-front_back_space_y,frame_front_z-led_cutout_z-back_thickness_z-front_back_space_z*3-painting_thickness_z-front_thickness_z).toCSG()
@@ -108,6 +110,7 @@ trench_frame_mid = trench_frame_mid.union(new Wedge(rim_y-front_back_space_y, fr
 								.moveToCenterX())
 // move to make y zero be the edge of diffusion paper
 trench_frame_mid = trench_frame_mid.movey(-dovetail_y)
+								.setName("frame_mid")
 
 // double-sided c-clamp snap fit joint connecting front and back
 CSG cclamp = new Cube(c_clamp_spring_x, c_clamp_breadth_y, c_clamp_depth_z).toCSG()
@@ -143,6 +146,7 @@ CSG painting = new Cube(section_x, painting_edge_y, painting_thickness_z).toCSG(
 								.setColor(javafx.scene.paint.Color.DARKRED)
 // move to make y zero be the edge of diffusion paper
 painting = painting.movey(-dovetail_y)
+								.setName("painting")
 
 // model the LED strip, for reference
 CSG led = new Cube(section_x, led_cutout_y, led_cutout_z).toCSG()
@@ -153,6 +157,7 @@ CSG led = new Cube(section_x, led_cutout_y, led_cutout_z).toCSG()
 								.setColor(javafx.scene.paint.Color.CYAN)
 // move to make y zero be the edge of diffusion paper
 led = led.movey(-dovetail_y)
+								.setName("led")
 
 // battery box
 CSG battery_box = new Cube(battery_x,battery_y, battery_z).toCSG()
