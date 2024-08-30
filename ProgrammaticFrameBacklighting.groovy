@@ -133,13 +133,13 @@ clamp_wedge = clamp_wedge.union(clamp_wedge.mirrorx())
 CSG cclamp = clamp_bars.union(clamp_wedge)
 // move to make y zero be the edge of diffusion paper
 //cclamp = cclamp.movey(shift_y)
-cclamp = cclamp.movey(shift_y+3)
+//cclamp = cclamp.movey(shift_y+3)
 
 // attach the c clamp to the back panel
 trench_frame_back = trench_frame_back.union(cclamp)
 
 // take a diff of the c clamp, to create pockets in the front panel
-CSG pocket = cclamp.union(clamp_bars.movey(shift_y+3).hull()).toolOffset(0.91)
+CSG pocket = cclamp.union(clamp_bars.hull()).toolOffset(0.5)
 trench_frame_front = trench_frame_front.difference(pocket)
 //trench_frame_front = trench_frame_front.minkowskiDifference(cclamp.hull(), 0.91)
 
