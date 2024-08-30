@@ -19,6 +19,7 @@ def front_thickness_z = 5
 def front_back_space_y = 0.1
 def front_back_space_z = 0.1
 
+def mid_seat_y = 2
 def rim_y = 1.5
 def dovetail_y = 1
 def extra_y = painting_edge_y - dovetail_y - rim_y + front_back_space_y
@@ -34,7 +35,7 @@ def c_clamp_depth_z = 6
 def section_x = 30
 
 def frame_back_x = section_x
-def frame_back_y = side_thickness_y + led_cutout_y + rim_y + dovetail_y + extra_y
+def frame_back_y = side_thickness_y + led_cutout_y + mid_seat_y + rim_y + dovetail_y + extra_y
 def frame_back_z =  inset_z + 2 + led_cutout_z + back_thickness_z
 
 def frame_front_x = section_x
@@ -49,53 +50,70 @@ def battery_z = 0.76*25.4
 CSG trench_frame_back = new Cube(frame_back_x, frame_back_y, back_thickness_z).toCSG()
 								.toZMin()
 								.toYMin()
-//side panel
+//back panel, side panel
 trench_frame_back = trench_frame_back.union(new Cube(frame_back_x, side_thickness_y, frame_back_z).toCSG()
 								.toZMin()
 								.toYMax()
 								.movey(frame_back_y))
-//rim
+//back panel, seat for mid plate
+trench_frame_back = trench_frame_back.union(new Cube(frame_back_x, mid_seat_y, back_thickness_z+led_cutout_z).toCSG()
+								.toZMax()
+								.movez(back_thickness_z+led_cutout_z)
+								.toYMax()
+								.movey(frame_back_y-side_thickness_y))
+//back panel, square of dovetail
 trench_frame_back = trench_frame_back.union(new Cube(frame_back_x, rim_y, lip_z).toCSG()
 								.toZMin()
 								.movez(back_thickness_z)
 								.toYMax()
-								.movey(frame_back_y-side_thickness_y-led_cutout_y))
-//dovetail
+								.movey(frame_back_y-side_thickness_y-led_cutout_y-mid_seat_y))
+//back panel, wedge of dovetail
 trench_frame_back = trench_frame_back.union(new Wedge(dovetail_y, frame_back_x, lip_z).toCSG()
 								.rotz(270)
 								.rotx(180)
 								.toZMin()
 								.movez(back_thickness_z)
 								.toYMax()
-								.movey(frame_back_y-side_thickness_y-led_cutout_y-rim_y)
+								.movey(frame_back_y-side_thickness_y-led_cutout_y-mid_seat_y-rim_y)
 								.moveToCenterX())
-// move to make y zero be the edge of diffusion paper
+// back panel, move to make y zero be the edge of diffusion paper
 trench_frame_back = trench_frame_back.movey(shift_y)
 
-//front plate
+//front panel, down to painting
 CSG trench_frame_front = new Cube(frame_front_x, frame_front_y, front_thickness_z).toCSG()
 								.toZMax()
 								.movez(frame_front_z)
 								.toYMin()
-trench_frame_front = trench_frame_front.union(new Cube(frame_front_x, led_cutout_y-front_back_space_y, painting_thickness_z+front_back_space_z+front_thickness_z).toCSG()
+//front panel, down to mid plate
+trench_frame_front = trench_frame_front.union(new Cube(frame_front_x, led_cutout_y+mid_seat_y-front_back_space_y, painting_thickness_z+front_back_space_z+front_thickness_z).toCSG()
 								.toZMax()
 								.movez(frame_front_z)
 								.toYMax()
 								.movey(frame_back_y-side_thickness_y-front_back_space_y))
+//front panel, down to back panel side plate
 trench_frame_front = trench_frame_front.union(new Cube(frame_front_x, side_thickness_y*2 + front_back_space_y*2, frame_front_z- frame_back_z- front_back_space_z).toCSG()
 								.toZMax()
 								.movez(frame_front_z)
 								.toYMax()
 								.movey(frame_front_y))
+//front panel, side panel
 trench_frame_front = trench_frame_front.union(new Cube(frame_front_x, side_thickness_y, frame_front_z).toCSG()
 								.toZMin()
 								.toYMax()
 								.movey(frame_front_y))
-// move to make y zero be the edge of diffusion paper
+trench_frame_front = trench_frame_front.difference(new Wedge(front_thickness_z*(2/3),frame_front_x,front_thickness_z*(1/2)).toCSG()
+														.rotz(270)
+														.rotx(90)
+														.toZMax()
+														.movez(trench_frame_front.maxZ)
+														.toYMin()
+														.movey(trench_frame_front.minY)
+														.moveToCenterX())
+//front panel, move to make y zero be the edge of diffusion paper
 trench_frame_front = trench_frame_front.movey(shift_y)
 
 //middle spacer
-CSG trench_frame_mid = new Cube(frame_front_x,led_cutout_y+rim_y-front_back_space_y,frame_front_z-led_cutout_z-back_thickness_z-front_back_space_z*3-painting_thickness_z-front_thickness_z).toCSG()
+CSG trench_frame_mid = new Cube(frame_front_x,led_cutout_y+mid_seat_y+rim_y-front_back_space_y,frame_front_z-led_cutout_z-back_thickness_z-front_back_space_z*3-painting_thickness_z-front_thickness_z).toCSG()
 								.toZMax()
 								.movez(frame_front_z-front_back_space_z*2-painting_thickness_z-front_thickness_z)
 								.toYMax()
@@ -106,7 +124,7 @@ trench_frame_mid = trench_frame_mid.union(new Wedge(rim_y-front_back_space_y, fr
 								.toZMax()
 								.movez(led_cutout_z+back_thickness_z+front_back_space_z)
 								.toYMax()
-								.movey(frame_back_y-side_thickness_y-led_cutout_y-front_back_space_y)
+								.movey(frame_back_y-side_thickness_y-led_cutout_y-mid_seat_y-front_back_space_y)
 								.moveToCenterX())
 // move to make y zero be the edge of diffusion paper
 trench_frame_mid = trench_frame_mid.movey(shift_y)
@@ -156,7 +174,7 @@ CSG led = new Cube(section_x, led_cutout_y, led_cutout_z).toCSG()
 								.toZMin()
 								.movez(back_thickness_z)
 								.toYMax()
-								.movey(frame_back_y-side_thickness_y)
+								.movey(frame_back_y-side_thickness_y-mid_seat_y)
 // move to make y zero be the edge of diffusion paper
 led = led.movey(shift_y)
 
