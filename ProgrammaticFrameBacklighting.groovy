@@ -23,6 +23,8 @@ def rim_y = 1.5
 def dovetail_y = 1
 def extra_y = painting_edge_y - dovetail_y - rim_y + front_back_space_y
 
+def shift_y = -dovetail_y
+
 def inset_z = 2
 
 def c_clamp_spring_x = 1.5
@@ -68,8 +70,7 @@ trench_frame_back = trench_frame_back.union(new Wedge(dovetail_y, frame_back_x, 
 								.movey(frame_back_y-side_thickness_y-led_cutout_y-rim_y)
 								.moveToCenterX())
 // move to make y zero be the edge of diffusion paper
-trench_frame_back = trench_frame_back.movey(-dovetail_y)
-								.setName("frame_back")
+trench_frame_back = trench_frame_back.movey(shift_y)
 
 //front plate
 CSG trench_frame_front = new Cube(frame_front_x, frame_front_y, front_thickness_z).toCSG()
@@ -91,8 +92,7 @@ trench_frame_front = trench_frame_front.union(new Cube(frame_front_x, side_thick
 								.toYMax()
 								.movey(frame_front_y))
 // move to make y zero be the edge of diffusion paper
-trench_frame_front = trench_frame_front.movey(-dovetail_y)
-								.setName("frame_front")
+trench_frame_front = trench_frame_front.movey(shift_y)
 
 //middle spacer
 CSG trench_frame_mid = new Cube(frame_front_x,led_cutout_y+rim_y-front_back_space_y,frame_front_z-led_cutout_z-back_thickness_z-front_back_space_z*3-painting_thickness_z-front_thickness_z).toCSG()
@@ -109,47 +109,47 @@ trench_frame_mid = trench_frame_mid.union(new Wedge(rim_y-front_back_space_y, fr
 								.movey(frame_back_y-side_thickness_y-led_cutout_y-front_back_space_y)
 								.moveToCenterX())
 // move to make y zero be the edge of diffusion paper
-trench_frame_mid = trench_frame_mid.movey(-dovetail_y)
-								.setName("frame_mid")
+trench_frame_mid = trench_frame_mid.movey(shift_y)
 
 // double-sided c-clamp snap fit joint connecting front and back
 CSG clamp_bars = new Cube(c_clamp_spring_x, c_clamp_breadth_y, c_clamp_depth_z).toCSG()
 								.toZMin()
-								.toYMin()
+								.toYMax()
+								.movey(frame_back_y)
+								.movez(frame_back_z)
 								.movex(-5)
 clamp_bars = clamp_bars.union(clamp_bars.mirrorx())
+								.movey(shift_y)
 								//.hull()
 CSG clamp_wedge = new Wedge(0.75,c_clamp_breadth_y,1).toCSG()
 								.toZMax()
 								.movez(clamp_bars.maxZ)
 								.toXMin()
 								.movex(clamp_bars.maxX)
-								.toYMin()
+								.toYMax()
+								.movey(clamp_bars.maxY)
 clamp_wedge = clamp_wedge.union(clamp_wedge.mirrorz().toZMax().movez(clamp_wedge.minZ))
 clamp_wedge = clamp_wedge.union(clamp_wedge.mirrorx())
 CSG cclamp = clamp_bars.union(clamp_wedge)
-cclamp = cclamp.toYMax()
-				.movey(frame_back_y)
-				.movez(frame_back_z)
 // move to make y zero be the edge of diffusion paper
-cclamp = cclamp.movey(-dovetail_y+3)
+//cclamp = cclamp.movey(shift_y)
+cclamp = cclamp.movey(shift_y+3)
 
 // attach the c clamp to the back panel
 trench_frame_back = trench_frame_back.union(cclamp)
 
 // take a diff of the c clamp, to create pockets in the front panel
-trench_frame_front = trench_frame_front.difference(cclamp.hull().toolOffset(0.91))
-//trench_frame_front = trench_frame_front.minkowskiDifference(cclamp.union(clamp_bars.hull()), 0.91)
+CSG pocket = cclamp.union(clamp_bars.movey(shift_y+3).hull()).toolOffset(0.91)
+trench_frame_front = trench_frame_front.difference(pocket)
+//trench_frame_front = trench_frame_front.minkowskiDifference(cclamp.hull(), 0.91)
 
 // model the painting, for reference
 CSG painting = new Cube(section_x, painting_edge_y, painting_thickness_z).toCSG()
 								.toZMax()
 								.movez(inset_z + painting_thickness_z + led_cutout_z + back_thickness_z)
 								.toYMin()
-								.setColor(javafx.scene.paint.Color.DARKRED)
 // move to make y zero be the edge of diffusion paper
-painting = painting.movey(-dovetail_y)
-								.setName("painting")
+painting = painting.movey(shift_y)
 
 // model the LED strip, for reference
 CSG led = new Cube(section_x, led_cutout_y, led_cutout_z).toCSG()
@@ -157,14 +157,67 @@ CSG led = new Cube(section_x, led_cutout_y, led_cutout_z).toCSG()
 								.movez(back_thickness_z)
 								.toYMax()
 								.movey(frame_back_y-side_thickness_y)
-								.setColor(javafx.scene.paint.Color.CYAN)
 // move to make y zero be the edge of diffusion paper
-led = led.movey(-dovetail_y)
-								.setName("led")
+led = led.movey(shift_y)
 
 // battery box
 CSG battery_box = new Cube(battery_x,battery_y, battery_z).toCSG()
 							.movex(300)
 
+trench_frame_back.setColor(javafx.scene.paint.Color.WHITESMOKE)
+					.setName("frame_back")
+					.setManufacturing({ toMfg ->
+						return toMfg
+								//.rotx(90)// fix the orientation
+								.toZMin()//move it down to the flat surface
+					})
+					
+led.setColor(javafx.scene.paint.Color.CYAN)
+					.setName("led_strip")
+					.addAssemblyStep(1, new Transform().movez(15))
+					.setManufacturing({ toMfg ->
+						return toMfg
+								//.rotx(90)// fix the orientation
+								.toZMin()//move it down to the flat surface
+					})
+					.addAssemblyStep(inset_z, null)
+					
+trench_frame_mid.setColor(javafx.scene.paint.Color.DIMGRAY)
+					.setName("frame_mid")
+					.addAssemblyStep(2, new Transform().movez(20))
+					.setManufacturing({ toMfg ->
+						return toMfg
+								//.rotx(90)// fix the orientation
+								.toZMin()//move it down to the flat surface
+					})
+					
+painting.setColor(javafx.scene.paint.Color.DARKRED)
+					.setName("painting_edge")
+					.addAssemblyStep(3, new Transform().movez(25))
+					.setManufacturing({ toMfg ->
+						return toMfg
+								//.rotx(90)// fix the orientation
+								.toZMin()//move it down to the flat surface
+					})
+					
+trench_frame_front.setColor(javafx.scene.paint.Color.web('#505050'))
+					.setName("frame_front")
+					.addAssemblyStep(4, new Transform().movez(35))
+					.setManufacturing({ toMfg ->
+						return toMfg
+								//.rotx(90)// fix the orientation
+								.toZMin()//move it down to the flat surface
+					})
+					
+battery_box = battery_box.setColor(javafx.scene.paint.Color.YELLOW)
+					.setName("battery_box")
+					.addAssemblyStep(4, new Transform().movez(0))
+					.setManufacturing({ toMfg ->
+						return toMfg
+								//.rotx(90)// fix the orientation
+								.toZMin()//move it down to the flat surface
+					})
+
 return [trench_frame_back, trench_frame_mid, trench_frame_front, led, painting]
-//return trench_frame_mid
+//return pocket
+
