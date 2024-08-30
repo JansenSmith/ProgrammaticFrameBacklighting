@@ -223,7 +223,7 @@ trench_frame_front.setColor(javafx.scene.paint.Color.web('#505050'))
 					.addAssemblyStep(4, new Transform().movez(35))
 					.setManufacturing({ toMfg ->
 						return toMfg
-								//.rotx(90)// fix the orientation
+								.rotx(180)// fix the orientation
 								.toZMin()//move it down to the flat surface
 					})
 					
@@ -237,5 +237,5 @@ battery_box = battery_box.setColor(javafx.scene.paint.Color.YELLOW)
 					})
 
 return [trench_frame_back, trench_frame_mid, trench_frame_front, led, painting]
-//return pocket
+//return trench_frame_front
 
