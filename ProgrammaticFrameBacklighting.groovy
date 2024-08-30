@@ -200,12 +200,12 @@ led.setColor(javafx.scene.paint.Color.CYAN)
 					})
 					.addAssemblyStep(inset_z, null)
 					
-trench_frame_mid.setColor(javafx.scene.paint.Color.DIMGRAY)
+trench_frame_mid.setColor(javafx.scene.paint.Color.SILVER)
 					.setName("frame_mid")
 					.addAssemblyStep(2, new Transform().movez(20))
 					.setManufacturing({ toMfg ->
 						return toMfg
-								//.rotx(90)// fix the orientation
+								.rotx(180)// fix the orientation
 								.toZMin()//move it down to the flat surface
 					})
 					
