@@ -113,30 +113,33 @@ trench_frame_mid = trench_frame_mid.movey(-dovetail_y)
 								.setName("frame_mid")
 
 // double-sided c-clamp snap fit joint connecting front and back
-CSG cclamp = new Cube(c_clamp_spring_x, c_clamp_breadth_y, c_clamp_depth_z).toCSG()
+CSG clamp_bars = new Cube(c_clamp_spring_x, c_clamp_breadth_y, c_clamp_depth_z).toCSG()
 								.toZMin()
 								.toYMin()
 								.movex(-5)
+clamp_bars = clamp_bars.union(clamp_bars.mirrorx())
+								//.hull()
 CSG clamp_wedge = new Wedge(0.75,c_clamp_breadth_y,1).toCSG()
-								.rotz(180)
 								.toZMax()
-								.movez(cclamp.maxZ)
-								.toXMax()
-								.movex(cclamp.minX)
+								.movez(clamp_bars.maxZ)
+								.toXMin()
+								.movex(clamp_bars.maxX)
 								.toYMin()
-cclamp = cclamp.union(clamp_wedge, clamp_wedge.mirrorz().toZMax().movez(clamp_wedge.minZ))
-cclamp = cclamp.union(cclamp.mirrorx())
+clamp_wedge = clamp_wedge.union(clamp_wedge.mirrorz().toZMax().movez(clamp_wedge.minZ))
+clamp_wedge = clamp_wedge.union(clamp_wedge.mirrorx())
+CSG cclamp = clamp_bars.union(clamp_wedge)
 cclamp = cclamp.toYMax()
 				.movey(frame_back_y)
 				.movez(frame_back_z)
 // move to make y zero be the edge of diffusion paper
-cclamp = cclamp.movey(-dovetail_y)
+cclamp = cclamp.movey(-dovetail_y+3)
 
 // attach the c clamp to the back panel
 trench_frame_back = trench_frame_back.union(cclamp)
 
 // take a diff of the c clamp, to create pockets in the front panel
-trench_frame_front = trench_frame_front.difference(trench_frame_back)
+trench_frame_front = trench_frame_front.difference(cclamp.hull().toolOffset(0.91))
+//trench_frame_front = trench_frame_front.minkowskiDifference(cclamp.union(clamp_bars.hull()), 0.91)
 
 // model the painting, for reference
 CSG painting = new Cube(section_x, painting_edge_y, painting_thickness_z).toCSG()
@@ -164,4 +167,4 @@ CSG battery_box = new Cube(battery_x,battery_y, battery_z).toCSG()
 							.movex(300)
 
 return [trench_frame_back, trench_frame_mid, trench_frame_front, led, painting]
-//return cclamp
+//return trench_frame_mid
