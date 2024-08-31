@@ -13,7 +13,7 @@ def led_cutout_z = 0.31*25.4
 def lip_z = 1.5
 
 def side_thickness_y = 2
-def back_thickness_z = 3
+def back_thickness_z = 1
 def front_thickness_z = 5
 
 def front_back_space_y = 0.1
@@ -26,7 +26,7 @@ def extra_y = painting_edge_y - dovetail_y - rim_y + front_back_space_y
 
 def shift_y = -dovetail_y
 
-def inset_z = 2
+def inset_z = 1
 
 def c_clamp_spring_x = 1.5
 def c_clamp_breadth_y = side_thickness_y
