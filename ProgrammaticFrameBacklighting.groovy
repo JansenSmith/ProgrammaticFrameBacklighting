@@ -147,7 +147,7 @@ CSG clamp_wedge = new Wedge(0.75,c_clamp_breadth_y,1).toCSG()
 								.toYMax()
 								.movey(clamp_bars.maxY)
 clamp_wedge = clamp_wedge.union(clamp_wedge.mirrorz()
-								.scalez(.6)
+								.scalez(0.6)
 								.toZMax()
 								.movez(clamp_wedge.minZ))
 clamp_wedge = clamp_wedge.union(clamp_wedge.mirrorx())
@@ -157,7 +157,7 @@ CSG cclamp = clamp_bars.union(clamp_wedge)
 //cclamp = cclamp.movey(shift_y+3)
 
 // attach the c clamp to the back panel
-trench_frame_back = trench_frame_back.union(cclamp)
+trench_frame_back = trench_frame_back.union(cclamp.movez(-0.35)) // try 0.3 if tabs break
 
 // take a diff of the c clamp, to create pockets in the front panel
 CSG pocket = cclamp.union(clamp_bars.hull()).toolOffset(0.5)
