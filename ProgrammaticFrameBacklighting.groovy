@@ -256,8 +256,8 @@ if(is_prototype_only)
 // code to slice the frame at X=0 and extrude 
 CSG frame_section = trench_frame_front.union(trench_frame_mid, led, painting, trench_frame_back) 
 
-def slice_trans = new Transform()
-List<Polygon> polys = Slice.slice(frame_section.roty(90),slice_trans,0).collect{it.transformed(slice_trans)}
+def slice_trans = new Transform().rotY(90)
+List<Polygon> polys = Slice.slice(frame_section.roty(90),slice_trans,0).collect{it.transformed(slice_trans.inverse())}
 //def slice_trans = new Transform().roty(90)//.roty(90)//.movez(20)
 //List<Polygon> polys = Slice.slice(frame_section,slice_trans,0).collect{it.transformed(slice_trans)}
 
