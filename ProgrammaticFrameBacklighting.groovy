@@ -274,9 +274,8 @@ ArrayList<Polygon> list=new ArrayList<Polygon>();
 
 SVGLoad l=new SVGLoad(earCoreFile.toURI())
 for(String s:l.getLayers()) {
-	list.addAll(l.getPolygonByLayers().get(s))
+	frame_slice.addAll(l.getPolygonByLayers().get(s))
 }
 
-return list
-return [frame_section.movez(-30),polys,list]
+return frame_slice
 
