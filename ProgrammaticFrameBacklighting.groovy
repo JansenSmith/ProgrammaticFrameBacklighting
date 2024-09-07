@@ -287,7 +287,8 @@ for(String s:l.getLayers()) {
 
 println "Layers= "+l.getLayers()
 
-//def 
+//Polygon innerCross = polys.get(1)
+//CSG crossExtrusion = Extrude.polygons(innerCross, 2.5)
 
 //return frame_slice
 return [frame_section.movez(-30),frame_slice]
