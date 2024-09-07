@@ -260,8 +260,8 @@ CSG frame_section = trench_frame_front.union(trench_frame_mid, led, painting, tr
 //List<Polygon> polys = Slice.slice(frame_section,slice_trans,0).collect{it.transformed(slice_trans.inverse())}
 //def slice_trans = new Transform()
 //List<Polygon> polys = Slice.slice(frame_section.roty(90),slice_trans,0).collect{it.transformed(slice_trans.inverse())}
-def slice_trans = new Transform()
-List<Polygon> polys = Slice.slice(frame_section.roty(90),slice_trans,0).collect{it.transformed(slice_trans.rotY(90))}
+def new_trans = new Transform()
+List<Polygon> polys = Slice.slice(frame_section.roty(90),new_trans,0).collect{it.transformed(new_trans.rotY(90))}
 
 String url = "https://github.com/JansenSmith/ProgrammaticFrameBacklighting.git"
 String filename="frame_slice.svg"
