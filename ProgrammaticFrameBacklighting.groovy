@@ -1,4 +1,5 @@
 import eu.mihosoft.vrl.v3d.*
+import eu.mihosoft.vrl.v3d.svg.*
 
 // ProgrammaticFrameBacklighting.groovy
 
@@ -252,6 +253,29 @@ battery_box = battery_box.setColor(javafx.scene.paint.Color.YELLOW)
 if(is_prototype_only)
 	return [trench_frame_back, trench_frame_mid, trench_frame_front, led, painting]
 
-return new Cube(10,10,10).toCSG()
-//return trench_frame_front
+// code to slice the frame at X=0 and extrude 
+CSG frame_section = trench_frame_front.union(trench_frame_mid, led, painting, trench_frame_back) 
+
+List<Polygon> polys = Slice.slice(frame_section,new Transform(),0).collect{it.transformed(new Transform().movez(1))}
+
+String url = "https://github.com/JansenSmith/ProgrammaticFrameBacklighting.git"
+String filename="frame_slice.svg"
+File earCoreFile = ScriptingEngine.fileFromGit(url,
+		filename);
+SVGExporter svg = new SVGExporter();
+		
+for( Polygon p: polys){
+	svg.toPolyLine(p);
+	svg.colorTick();
+}
+println "Pushing changes"
+ScriptingEngine.pushCodeToGit(url, "main", filename, svg.make(), "Making Cached SVG "+filename, true)
+ArrayList<Polygon> list=new ArrayList<Polygon>();
+
+SVGLoad l=new SVGLoad(earCoreFile.toURI())
+for(String s:l.getLayers()) {
+	list.addAll(l.getPolygonByLayers().get(s))
+}
+
+return [base.movez(20),polys,list]
 
