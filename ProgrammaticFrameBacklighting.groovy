@@ -270,7 +270,7 @@ for( Polygon p: polys){
 }
 println "Pushing changes"
 ScriptingEngine.pushCodeToGit(url, "main", filename, svg.make(), "Making Cached SVG "+filename, true)
-ArrayList<Polygon> list=new ArrayList<Polygon>();
+ArrayList<Polygon> frame_slice=new ArrayList<Polygon>();
 
 SVGLoad l=new SVGLoad(earCoreFile.toURI())
 for(String s:l.getLayers()) {
@@ -278,4 +278,5 @@ for(String s:l.getLayers()) {
 }
 
 return frame_slice
+//return [frame_section.movez(-30),polys,list]
 
