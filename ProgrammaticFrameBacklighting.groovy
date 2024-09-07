@@ -285,6 +285,10 @@ for(String s:l.getLayers()) {
 	frame_slice.addAll(l.getPolygonByLayers().get(s))
 }
 
+println "Layers= "+l.getLayers()
+
+//def 
+
 //return frame_slice
 return [frame_section.movez(-30),frame_slice]
 
