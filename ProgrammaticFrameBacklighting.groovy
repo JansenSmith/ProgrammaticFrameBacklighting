@@ -254,7 +254,7 @@ if(is_prototype_only)
 	return [trench_frame_back, trench_frame_mid, trench_frame_front, led, painting]
 
 // code to slice the frame at X=0 and extrude 
-CSG frame_section = trench_frame_front.union(trench_frame_mid, led, painting, trench_frame_back) 
+CSG frame_section = trench_frame_front.union(trench_frame_mid, painting, trench_frame_back) 
 
 //def slice_trans = new Transform().rotY(90)
 //List<Polygon> polys = Slice.slice(frame_section,slice_trans,0).collect{it.transformed(slice_trans.inverse())}
