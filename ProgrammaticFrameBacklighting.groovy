@@ -159,14 +159,13 @@ CSG cclamp = clamp_bars.union(clamp_wedge)
 //cclamp = cclamp.movey(shift_y+3)
 
 //CSG clamp_hard_stop = new Cube(clamp_bars.maxX - c_clamp_spring_x- c_clamp_tab_hard_stop_distance, cclamp.totalY, cclamp.totalZ).toCSG()
-CSG clamp_hard_stop = new Cube( 2 * (clamp_bars.maxX - c_clamp_spring_x - c_clamp_tab_hard_stop_distance), cclamp.totalY, cclamp.totalZ).toCSG()
-								.toZMax()
-								.movez(cclamp.maxZ)
+CSG clamp_hard_stop = new Cube( 2 * (clamp_bars.maxX - c_clamp_spring_x - c_clamp_tab_hard_stop_distance), cclamp.totalY, cclamp.maxZ).toCSG()
+								.toZMin()
 								.toYMax()
 								.movey(cclamp.maxY)
 
 // attach the c clamp to the back panel
-trench_frame_back = trench_frame_back.union(cclamp.movez(-0.35), clamp_hard_stop) // try 0.3 if tabs break
+trench_frame_back = trench_frame_back.union(cclamp.movez(-0.35-front_back_space_z), clamp_hard_stop) // try 0.3 if tabs break
 
 // take a diff of the c clamp, to create pockets in the front panel
 CSG pocket = cclamp.union(clamp_bars.hull()).toolOffset(0.5)
