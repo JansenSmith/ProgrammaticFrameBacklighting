@@ -277,6 +277,6 @@ for(String s:l.getLayers()) {
 	frame_slice.addAll(l.getPolygonByLayers().get(s))
 }
 
-return frame_slice
-//return [frame_section.movez(-30),polys,list]
+//return frame_slice
+return [frame_section.movez(-30),frame_slice]
 
