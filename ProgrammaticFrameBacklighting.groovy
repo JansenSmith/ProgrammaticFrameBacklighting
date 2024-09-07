@@ -2,6 +2,8 @@ import eu.mihosoft.vrl.v3d.*
 
 // ProgrammaticFrameBacklighting.groovy
 
+def is_prototype_only = 0
+
 def painting_thickness_z = 6.1
 def painting_edge_y = 4
 
@@ -93,7 +95,7 @@ trench_frame_front = trench_frame_front.union(new Cube(frame_front_x, led_cutout
 								.toYMax()
 								.movey(frame_back_y-side_thickness_y-front_back_space_y))
 //front panel, down to back panel side plate
-trench_frame_front = trench_frame_front.union(new Cube(frame_front_x, side_thickness_y*2 + front_back_space_y*2, frame_front_z- frame_back_z- front_back_space_z).toCSG()
+trench_frame_front = trench_frame_front.union(new Cube(frame_front_x, side_thickness_y*2 + front_back_space_y*2, frame_front_z- frame_back_z- 2*front_back_space_z).toCSG()
 								.toZMax()
 								.movez(frame_front_z)
 								.toYMax()
@@ -247,6 +249,9 @@ battery_box = battery_box.setColor(javafx.scene.paint.Color.YELLOW)
 								.toZMin()//move it down to the flat surface
 					})
 
-return [trench_frame_back, trench_frame_mid, trench_frame_front, led, painting]
+if(is_prototype_only)
+	return [trench_frame_back, trench_frame_mid, trench_frame_front, led, painting]
+
+return new Cube(10,10,10).toCSG()
 //return trench_frame_front
 
