@@ -262,7 +262,7 @@ CSG frame_section = trench_frame_front.union(trench_frame_mid, painting, trench_
 //def slice_trans = new Transform()
 //List<Polygon> polys = Slice.slice(frame_section.roty(90),slice_trans,0).collect{it.transformed(slice_trans.inverse())}
 def slice_trans = new Transform()
-List<Polygon> polys = Slice.slice(frame_section.roty(90),slice_trans,0).collect{it.transformed(slice_trans.inverse())}
+List<Polygon> polys = Slice.slice(frame_section.movex(10).roty(90),slice_trans,0).collect{it.transformed(slice_trans.inverse())}
 //def new_trans = new Transform()
 //List<Polygon> polys = Slice.slice(frame_section.roty(90),new_trans,0).collect{it.transformed(new_trans.rotY(90))}
 
