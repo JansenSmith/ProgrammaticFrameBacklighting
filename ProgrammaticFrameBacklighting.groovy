@@ -3,7 +3,7 @@ import eu.mihosoft.vrl.v3d.svg.*
 
 // ProgrammaticFrameBacklighting.groovy
 
-def is_prototype_only = 0
+def is_prototype_only = 1
 
 def painting_thickness_z = 6.1
 def painting_edge_y = 4
